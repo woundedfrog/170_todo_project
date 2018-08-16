@@ -15,9 +15,6 @@ get "/" do
   redirect "/lists"
 end
 
-
-
-
 # View all lists
 get "/lists" do
   @lists = session[:lists]
@@ -41,12 +38,12 @@ end
 # Create a new list
 post "/lists" do
   list_name = params[:list_name].strip
-
-  if error = error_for_list_name(list_name)
+  error = error_for_list_name(list_name)
+  if error
     session[:error] = error
     erb :new_list, layout: :layout
   else
-    session[:lists] << {name: list_name, todos: []}
+    session[:lists] << { name: list_name, todos: [] }
     session[:success] = "The list has been created."
     redirect "/lists"
   end
