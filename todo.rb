@@ -40,6 +40,7 @@ end
 post "/lists" do
   list_name = params[:list_name].strip
   error = error_for_list_name(list_name)
+
   if error
     session[:error] = error
     erb :new_list, layout: :layout
@@ -50,8 +51,32 @@ post "/lists" do
   end
 end
 
-get "/list/:id" do
+get "/lists/:id" do
   id = params[:id].to_i
-  @lists = session[:lists][id]
+  @list = session[:lists][id]
   erb :list, layout: :layout
+end
+
+# Edit an existing todo list
+get "/lists/:id/edit" do
+  id = params[:id].to_i
+  @list = session[:lists][id]
+  erb :edit_list, layout: :layout
+end
+
+# Update an existing todo list
+post "/lists/:id" do
+  list_name = params[:list_name].strip
+  id = params[:id].to_i
+  @list = session[:lists][id]
+  error = error_for_list_name(list_name)
+
+  if error
+    session[:error] = error
+    erb :edit_list, layout: :layout
+  else
+    @list[:name] = list_name
+    session[:success] = "The list has been updated."
+    redirect "/lists/#{id}"
+  end
 end
