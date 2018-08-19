@@ -136,3 +136,17 @@ post "/lists/:list_id/todos/:id" do
   session[:success] = "The todo has been updated."
   redirect "/lists/#{@list_id}"
 end
+
+# Mark all todos as complete for a list
+
+post "/lists/:id/complete_all" do
+  @list_id = params[:id].to_i
+  @list = session[:lists][@list_id]
+
+  @list[:todos].each do |todo|
+    todo[:completed] = true
+  end
+
+  session[:success] = "All todos have been completed."
+  redirect "/lists/#{@list_id}"
+end
