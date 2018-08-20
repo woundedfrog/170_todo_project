@@ -8,6 +8,24 @@ configure do
   set :session_secret, "secret"
 end
 
+helpers do
+  def list_complete?(list)
+    todos_count(list) > 0 && todos_remaining_count(list) == 0
+  end
+
+  def list_class(list)
+    "complete" if list_complete?(list)
+  end
+
+  def todos_count(list)
+    list[:todos].count
+  end
+
+  def todos_remaining_count(list)
+    list[:todos].select { |todo| !todo[:completed] }.size
+  end
+end
+
 before do
   session[:lists] ||= []
 end
